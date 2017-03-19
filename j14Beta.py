@@ -4,8 +4,10 @@ __author__ = 'Jmeel14'
 import discord
 import re
 
-from bot_config import * as cfg
-from bot_cmds import * as cmds
+import config as cfg
+import cmds as cmds
+
+import cmds.commands as commands
 
 class Bot(discord.Client):
     """Discord bot class."""
@@ -13,7 +15,7 @@ class Bot(discord.Client):
     def __init__(self, ownerID, servID, logChnl):
         super(Bot, self).__init__()
 
-        self.prefix = config_start.get_prefix()
+        self.prefix = cfg.config_start.get_prefix()
         self.ownerID = ownerID
         self.servID = servID
         self.logChnl = logChnl
@@ -33,10 +35,32 @@ class Bot(discord.Client):
         if prefix_re:
             cmd_str = re.search(msg_cmd_re, msg.content).groups()[0]
 
-            if msg_
+            # Gain some arguments to use.
+            args = msg.content.split(' ')
+            channel = msg.channel
+
+            # Assume the length, not sure how you want to do this.
+            args[0] = str(args[0])[3:]
+
+            # Printing the arguments. For debugging.
+            # print(args)
+
+            # Loop through all of our commands.
+            for command in commands.defined:
+
+                # Printing the commands names, for debugging.
+                # print(command.name)
+
+                if args[0] == command.name:
+
+                    command.bot = j14_bot_beta
+                    
+                    if(command.process):
+                        await command.process(args, channel)
+
 
 j14_bot_beta = Bot(
-    'ID_BOT_OWNNER',
+    'ID_BOT_OWNER',
     'ID_SERVER',
     'ID_LOG_CHANNEL'
 )
